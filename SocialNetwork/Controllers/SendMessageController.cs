@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using SocialNetwork.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using SocialNetwork.ViewModels;
 
 namespace SocialNetwork.Controllers
 {
