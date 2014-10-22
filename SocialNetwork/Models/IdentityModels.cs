@@ -20,13 +20,13 @@ namespace SocialNetwork.Models
 
         public virtual ICollection<Message> Messages { get; set; }
         public virtual ICollection<Message> SentMessages { get; set; }
-        public virtual ICollection<LoginInfo> LoginInfos { get; set; }
+        public virtual ICollection<UserInfo> LoginInfos { get; set; }
 
         public ApplicationUser() {
 
             Messages = new List<Message>();
             SentMessages = new List<Message>();
-            LoginInfos = new List<LoginInfo>();
+            LoginInfos = new List<UserInfo>();
 
         
         }
@@ -46,6 +46,6 @@ namespace SocialNetwork.Models
         }
 
         public DbSet<Message> Messages { get; set; }
-        public DbSet<LoginInfo> LoginInfos { get; set; }
+        public DbSet<UserInfo> LoginInfos { get; set; }
     }
 }

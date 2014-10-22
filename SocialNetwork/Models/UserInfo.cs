@@ -6,12 +6,13 @@ using System.Web;
 
 namespace SocialNetwork.Models
 {
-    public class LoginInfo
+    public class UserInfo
     {
         [Key]
         public int LoginInfoID { get; set; }
         public int LoginCount { get; set; }
         public DateTime LastLogin { get; set; }
+        public int DeletedMessages { get; set; }
 
         public virtual ApplicationUser LoginUser { get; set; }
     }

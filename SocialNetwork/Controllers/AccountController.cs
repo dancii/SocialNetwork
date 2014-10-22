@@ -11,12 +11,16 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Owin;
 using SocialNetwork.Models;
+using SocialNetwork.ViewModels;
 
 namespace SocialNetwork.Controllers
 {
     [Authorize]
     public class AccountController : Controller
     {
+
+        private ApplicationDbContext db = new ApplicationDbContext();
+
         private ApplicationUserManager _userManager;
 
         public AccountController()
@@ -437,6 +441,34 @@ namespace SocialNetwork.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut();
+
+            var CurrentUser = db.Users.Find(User.Identity.GetUserId());
+
+            var findLoginInfo = db.LoginInfos.Where(i=> i.LoginUser.Id == CurrentUser.Id);
+
+            UserInfo loginInfo=null;
+
+            if (findLoginInfo.Count() == 0)
+            {
+                loginInfo = new UserInfo();
+                loginInfo.LoginCount += 1;
+                loginInfo.LastLogin = DateTime.Now;
+                loginInfo.LoginUser = CurrentUser;
+                db.LoginInfos.Add(loginInfo);
+            }
+            else {
+                loginInfo = db.LoginInfos.Find(findLoginInfo.SingleOrDefault().LoginInfoID);
+                db.LoginInfos.Attach(loginInfo);
+                loginInfo.LoginCount += 1;
+                loginInfo.LastLogin = DateTime.Now;
+                loginInfo.LoginUser = CurrentUser;
+                //db.LoginInfos.Remove(loginInfo);
+                
+            }
+
+            
+            db.SaveChanges();
+            
             return RedirectToAction("Index", "Home");
         }
 

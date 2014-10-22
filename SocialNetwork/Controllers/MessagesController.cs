@@ -31,8 +31,6 @@ namespace SocialNetwork.Controllers
                 noOfMessages = m.Where(k => k.MessageStatus == false).Count()
             });
 
-            System.Diagnostics.Debug.WriteLine(AllMessages);
-
             return View(AllMessages);
         }
 
@@ -76,6 +74,28 @@ namespace SocialNetwork.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Message message = db.Messages.Find(id);
+
+            var CurrentUser = db.Users.Find(User.Identity.GetUserId());
+
+            var currentUserInfo = db.LoginInfos.Where(i => i.LoginUser.Id == CurrentUser.Id);
+
+            UserInfo loginInfo = null;
+
+            if (currentUserInfo.Count() == 0)
+            {
+                loginInfo = new UserInfo();
+                loginInfo.DeletedMessages += 1;
+                db.LoginInfos.Add(loginInfo);
+            }
+            else
+            {
+                loginInfo = db.LoginInfos.Find(currentUserInfo.SingleOrDefault().LoginInfoID);
+                db.LoginInfos.Attach(loginInfo);
+                loginInfo.DeletedMessages += 1;
+            }
+
+            db.SaveChanges();
+
             if (message == null)
             {
                 return HttpNotFound();
