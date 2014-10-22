@@ -173,7 +173,10 @@
     <Compile Include="Models\Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\DetailMessageViewModel.cs" />
+    <Compile Include="ViewModels\MainMessageViewModel.cs" />
     <Compile Include="ViewModels\SendMessageViewModel.cs" />
+    <Compile Include="ViewModels\UserDetailMessageViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
@@ -232,6 +235,7 @@
     <Content Include="Views\Messages\Edit.cshtml" />
     <Content Include="Views\Messages\Index.cshtml" />
     <Content Include="Views\SendMessage\Index.cshtml" />
+    <Content Include="Views\Messages\ReadMessage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

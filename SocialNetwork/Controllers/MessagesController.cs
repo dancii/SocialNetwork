@@ -7,90 +7,65 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using SocialNetwork.Models;
+using SocialNetwork.ViewModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace SocialNetwork.Controllers
 {
+    [Authorize]
     public class MessagesController : Controller
     {
+
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Messages
+
         public ActionResult Index()
         {
             var currentUser = db.Users.Find(User.Identity.GetUserId());
 
-            return View(db.Messages.ToList().Where(m=>m.receiver.Id == currentUser.Id));
+            var AllMessages = db.Messages.Where(u => u.receiver.Id == currentUser.Id).GroupBy(group => group.sender).Select(m => new MainMessageViewModel
+            {
+                Username = m.Key.UserName,
+                noOfMessages = m.Where(k => k.MessageStatus == false).Count()
+            });
+
+            System.Diagnostics.Debug.WriteLine(AllMessages);
+
+            return View(AllMessages);
         }
 
         // GET: Messages/Details/5
-        public ActionResult Details(int? id)
+        public ActionResult Details(string senderUsername)
         {
-            if (id == null)
+            var CurrentUser = db.Users.Find(User.Identity.GetUserId());
+
+            var SenderUser = db.Users.Where(u=> u.UserName.Equals(senderUsername)).FirstOrDefault();
+
+            System.Diagnostics.Debug.WriteLine(SenderUser.UserName);
+
+            if (senderUsername == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Message message = db.Messages.Find(id);
-            if (message == null)
+
+            var allMessagesFromUser = db.Messages.Where(u => u.sender.Id==SenderUser.Id && u.receiver.Id==CurrentUser.Id).Select(m => new DetailMessageViewModel { 
+                MessageId=m.MessageID,
+                SenderUsername = m.sender.UserName,
+                MessageSubject=m.MessageSubject,
+                MessageTimestamp=m.MessageTime
+            
+            });
+
+            System.Diagnostics.Debug.WriteLine(allMessagesFromUser);
+
+            //Message message = db.Messages.Find(id);
+            if (allMessagesFromUser == null)
             {
                 return HttpNotFound();
             }
-            return View(message);
-        }
-
-        // GET: Messages/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Messages/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "MessageID,MessageSubject,MessageText,MessageTime,MessageStatus")] Message message)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Messages.Add(message);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-
-            return View(message);
-        }
-
-        // GET: Messages/Edit/5
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Message message = db.Messages.Find(id);
-            if (message == null)
-            {
-                return HttpNotFound();
-            }
-            return View(message);
-        }
-
-        // POST: Messages/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "MessageID,MessageSubject,MessageText,MessageTime,MessageStatus")] Message message)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(message).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View(message);
+            return View(allMessagesFromUser);
         }
 
         // GET: Messages/Delete/5
@@ -107,6 +82,27 @@ namespace SocialNetwork.Controllers
             }
             return View(message);
         }
+
+        public ActionResult ReadMessage(int? id) {
+
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Message message = db.Messages.Find(id);
+
+            UserDetailMessageViewModel UserDetailMessageModel = new UserDetailMessageViewModel();
+            UserDetailMessageModel.MessageId = message.MessageID;
+            UserDetailMessageModel.SenderUsername = message.sender.UserName;
+            UserDetailMessageModel.MessageText = message.MessageText;
+
+            message.MessageStatus = true;
+            db.SaveChanges();
+
+            return View(UserDetailMessageModel);
+        }
+
 
         // POST: Messages/Delete/5
         [HttpPost, ActionName("Delete")]

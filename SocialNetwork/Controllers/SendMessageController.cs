@@ -13,6 +13,7 @@ using SocialNetwork.ViewModels;
 
 namespace SocialNetwork.Controllers
 {
+    [Authorize]
     public class SendMessageController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();

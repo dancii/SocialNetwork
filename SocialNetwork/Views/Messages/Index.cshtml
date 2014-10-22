@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SocialNetwork.Models.Message>
+﻿@model IEnumerable<SocialNetwork.ViewModels.MainMessageViewModel>
 
 @{
     ViewBag.Title = "Messages";
@@ -9,16 +9,10 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.MessageSubject)
+            @Html.DisplayNameFor(model => model.Username)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.MessageText)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.MessageTime)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.MessageStatus)
+            @Html.DisplayNameFor(model => model.noOfMessages)
         </th>
         <th></th>
     </tr>
@@ -26,21 +20,14 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.MessageSubject)
+            @Html.DisplayFor(modelItem => item.Username)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.MessageText)
+            @Html.DisplayFor(modelItem => item.noOfMessages)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.MessageTime)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.MessageStatus)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.MessageID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.MessageID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.MessageID })
+            @Html.ActionLink("Details", "Details", new { senderUsername=item.Username })
+            
         </td>
     </tr>
 }

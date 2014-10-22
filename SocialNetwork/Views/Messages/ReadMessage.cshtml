@@ -1,0 +1,18 @@
+﻿@model SocialNetwork.ViewModels.UserDetailMessageViewModel
+
+@{
+    ViewBag.Title="Read";
+}
+
+<h1>Message</h1>
+<div>
+
+    <h3>From: @Html.DisplayFor(model => model.SenderUsername)</h3><br />
+    <h4>Message: @Html.DisplayFor(model => model.MessageText)</h4>
+    <p>
+        @Html.ActionLink("Delete", "Delete", new { id=Model.MessageId }, new { @class="btn btn-default" })
+    </p>
+
+
+</div>
+

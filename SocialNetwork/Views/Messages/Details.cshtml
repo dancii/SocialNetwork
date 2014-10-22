@@ -1,50 +1,38 @@
-﻿@model SocialNetwork.Models.Message
+﻿@model IEnumerable<SocialNetwork.ViewModels.DetailMessageViewModel>
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Messages";
 }
 
-<h2>Details</h2>
+<h2>All messages from @Html.DisplayFor(model => model.First().SenderUsername)</h2>
 
-<div>
-    <h4>Message</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
+<table class="table">
+    <tr>
+        <th>
             @Html.DisplayNameFor(model => model.MessageSubject)
-        </dt>
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MessageTimestamp)
+        </th>
+        <th></th>
+    </tr>
 
-        <dd>
-            @Html.DisplayFor(model => model.MessageSubject)
-        </dd>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.MessageSubject)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MessageTimestamp)
+            </td>
+            <td>
+                @Html.ActionLink("Read Message", "ReadMessage", new { id = item.MessageId })
+            </td>
+        </tr>
+    }
 
-        <dt>
-            @Html.DisplayNameFor(model => model.MessageText)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.MessageText)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.MessageTime)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.MessageTime)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.MessageStatus)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.MessageStatus)
-        </dd>
-
-    </dl>
-</div>
+</table>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.MessageID }) |
     @Html.ActionLink("Back to List", "Index")
 </p>
