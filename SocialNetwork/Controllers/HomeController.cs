@@ -17,6 +17,7 @@ namespace SocialNetwork.Controllers
          
         public ActionResult Index()
         {
+            //Get all user info from table UserInfo, return a viewmodel
             var currentUser = db.Users.Find(User.Identity.GetUserId());
 
             var currentUserInfo = db.LoginInfos.Where(i=> i.LoginUser.Id==currentUser.Id);

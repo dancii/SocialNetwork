@@ -22,6 +22,8 @@ namespace SocialNetwork.Controllers
         public ActionResult Index()
         {
 
+            //Gets all the users to show in a dropdown list, prints also if the message was sent. 
+
             var UserNames = db.Users.Select(x => new SelectListItem { Text=x.UserName, Value=x.UserName});
            
 
@@ -56,10 +58,14 @@ namespace SocialNetwork.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Index([Bind(Include = "MessageSubject,MessageText, Receiver")] SendMessageViewModel message)
         {
+            //Save message to db
+
             var Sender = db.Users.Find(User.Identity.GetUserId());
 
             var Receiver = db.Users.SingleOrDefault(recv => recv.UserName.Equals(message.Receiver));
             //var TotalMessages =    //.Where(u => u.Id == Sender.Id).Select(m => m);
+
+
 
             if (ModelState.IsValid)
             {

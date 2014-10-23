@@ -23,6 +23,8 @@ namespace SocialNetwork.Controllers
 
         public ActionResult Index()
         {
+
+            //Get all messages, groupby user. Get all Deleted, read and total messages
             var currentUser = db.Users.Find(User.Identity.GetUserId());
 
             var AllMessages = db.Messages.Where(u => u.receiver.Id == currentUser.Id).GroupBy(group => group.sender).Select(m => new MainMessageViewModel
@@ -35,24 +37,19 @@ namespace SocialNetwork.Controllers
             });
 
             
-
+            // If there is not any messages to send then send only the total deleted count
             if (AllMessages.Any())
             {
-                System.Diagnostics.Debug.WriteLine("EXIST");
+
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine("Sup");
-
                 AllMessages = db.LoginInfos.Where(u => u.LoginUser.Id == currentUser.Id).Select(m => new MainMessageViewModel { 
                     noOfDeletedMessages=m.DeletedMessages,
                     noOfMessages=0,
                     noOfReadMessages=0,
                     noOfTotalMessages=0
                 });
-                //AllMessages.First().noOfDeletedMessages = db.LoginInfos.Where(lu => lu.LoginUser.Id == currentUser.Id).Select(dm => dm.DeletedMessages).FirstOrDefault();
-                //AllMessages.First().noOfReadMessages = db.Messages.Where(m => m.receiver.Id == currentUser.Id && m.MessageStatus == true).Count();
-                //AllMessages.First().noOfTotalMessages = db.Messages.Where(t => t.receiver.Id == currentUser.Id).Count();
 
             }
             return View(AllMessages);
@@ -61,11 +58,11 @@ namespace SocialNetwork.Controllers
         // GET: Messages/Details/5
         public ActionResult Details(string senderUsername)
         {
+
+            //Get details about all messages from a user
             var CurrentUser = db.Users.Find(User.Identity.GetUserId());
 
             var SenderUser = db.Users.Where(u=> u.UserName.Equals(senderUsername)).FirstOrDefault();
-
-            System.Diagnostics.Debug.WriteLine(SenderUser.UserName);
 
             if (senderUsername == null)
             {
@@ -80,7 +77,6 @@ namespace SocialNetwork.Controllers
             
             });
 
-            System.Diagnostics.Debug.WriteLine(allMessagesFromUser);
 
             //Message message = db.Messages.Find(id);
             if (allMessagesFromUser == null)
@@ -115,6 +111,8 @@ namespace SocialNetwork.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
+
+            //read a message from a user
             Message message = db.Messages.Find(id);
 
             UserDetailMessageViewModel UserDetailMessageModel = new UserDetailMessageViewModel();
@@ -129,6 +127,7 @@ namespace SocialNetwork.Controllers
         }
 
 
+        // Delete a message 
         // POST: Messages/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -141,6 +140,8 @@ namespace SocialNetwork.Controllers
             var currentUserInfo = db.LoginInfos.Where(i => i.LoginUser.Id == CurrentUser.Id);
 
             UserInfo loginInfo = null;
+
+            //Adds to deleted messages
 
             if (currentUserInfo.Count() == 0)
             {

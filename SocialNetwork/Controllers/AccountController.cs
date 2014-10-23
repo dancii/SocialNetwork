@@ -443,6 +443,8 @@ namespace SocialNetwork.Controllers
         {
             AuthenticationManager.SignOut();
 
+            //When logoff is executed check if user exist in UserInfo table, if not, create an object and push in to table with user info.
+
             var CurrentUser = db.Users.Find(User.Identity.GetUserId());
 
             var findLoginInfo = db.LoginInfos.Where(i=> i.LoginUser.Id == CurrentUser.Id);
