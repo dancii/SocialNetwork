@@ -23,20 +23,10 @@ namespace SocialNetwork.Controllers
         {
 
             var UserNames = db.Users.Select(x => new SelectListItem { Text=x.UserName, Value=x.UserName});
-            //TempData["MessageSuccess"] = "";   
+           
 
             SendMessageViewModel model = new SendMessageViewModel();
-            /*
-            if (isSuccess)
-            {
-                ViewBag.Message = "Message " + TotalMessages + " was sent to " + Receiver.UserName + " at " + DateTime.Now + " succesfully!";
-            }
-            else
-            {
-                ViewBag.Message = "";
-            }
-            */
-            //System.Diagnostics.Debug.WriteLine("Its on: " + msg);
+           
             
             model.Users = new SelectList(UserNames,"Value","Text");
 
@@ -46,16 +36,14 @@ namespace SocialNetwork.Controllers
 
             if (parameter != null)
             {
-                model.SuccessMessage = "FHRITP";//msg;
-                ViewBag.Message = parameter; // "fhritp";
+                
+                ViewBag.Message = parameter; 
                 ViewBag.ReturnUrl = Url.Action("Index");
             }
             else
             {
                 model.SuccessMessage = null;
-                //ViewBag.Message = messageSuccess;
-                //ViewBag.ReturnUrl = Url.Action("Index");
-                //return View();
+
             }
 
             return View(model);
@@ -72,7 +60,6 @@ namespace SocialNetwork.Controllers
 
             var Receiver = db.Users.SingleOrDefault(recv => recv.UserName.Equals(message.Receiver));
             //var TotalMessages =    //.Where(u => u.Id == Sender.Id).Select(m => m);
-            var TotalMessages = db.LoginInfos.Where(u => u.LoginUser.Id == Sender.Id).Select(m => m.TotalMessages);
 
             if (ModelState.IsValid)
             {
@@ -85,13 +72,35 @@ namespace SocialNetwork.Controllers
                 MessageDB.sender = Sender;
                 MessageDB.receiver = Receiver;
 
+                var findLoginInfo = db.LoginInfos.Where(i => i.LoginUser.Id == Sender.Id);
+
+                /*UserInfo loginInfo = null;
+
+                if (findLoginInfo.Count() == 0)
+                {
+                    loginInfo = new UserInfo();
+                    loginInfo.TotalMessages += 1;
+                    loginInfo.LoginUser = Sender;
+                    db.LoginInfos.Add(loginInfo);
+                    System.Diagnostics.Debug.WriteLine("if: ");
+                }
+                else
+                {
+                    loginInfo = db.LoginInfos.Find(findLoginInfo.SingleOrDefault().LoginInfoID);
+                    db.LoginInfos.Attach(loginInfo);
+                    loginInfo.TotalMessages += 1;
+                    System.Diagnostics.Debug.WriteLine("Else: ");
+                }*/
+
 
                 db.Messages.Add(MessageDB);
                 db.SaveChanges();
 
-                TempData["MessageSuccess"] = "FHRITP";
+                
 
-                var successMessage = "Message " + " was sent to " + Receiver.UserName + " at " + DateTime.Now + " succesfully!";
+                var TotalMessages = db.LoginInfos.Where(u => u.LoginUser.Id == Sender.Id).Select(m => m.TotalMessages);
+
+                var successMessage = "Message was sent to " + Receiver.UserName + " succesfully!, " + DateTime.Now;
                 return RedirectToAction("Index", new { Message = successMessage });
                 //return RedirectToAction("Index");
             }
