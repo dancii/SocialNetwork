@@ -14,6 +14,8 @@ namespace SocialNetwork.Models
         public DateTime LastLogin { get; set; }
         public int DeletedMessages { get; set; }
 
+        public int TotalMessages { get; set; }
+
         public virtual ApplicationUser LoginUser { get; set; }
     }
 }

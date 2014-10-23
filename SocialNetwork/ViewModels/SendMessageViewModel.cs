@@ -25,5 +25,8 @@ namespace SocialNetwork.ViewModels
         public string Receiver { get; set; }
         public IEnumerable<SelectListItem> Users { get; set; }
 
+        [DataType(DataType.Text)]
+        [Display(Name = "SuccessMessage")]
+        public string SuccessMessage { get; set; }
     }
 }
