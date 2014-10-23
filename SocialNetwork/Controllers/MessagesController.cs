@@ -30,9 +30,31 @@ namespace SocialNetwork.Controllers
                 Username = m.Key.UserName,
                 noOfMessages = m.Where(k => k.MessageStatus == false).Count(),
                 noOfReadMessages=m.Where(k=> k.MessageStatus == true).Count(),
-                noOfDeletedMessages=db.LoginInfos.Where(lu => lu.LoginUser.Id == currentUser.Id).Select(dm => dm.DeletedMessages).FirstOrDefault()
+                noOfDeletedMessages=db.LoginInfos.Where(lu => lu.LoginUser.Id == currentUser.Id).Select(dm => dm.DeletedMessages).FirstOrDefault(),
+                noOfTotalMessages = m.Where(k => k.receiver.Id == currentUser.Id).Count()
             });
 
+            
+
+            if (AllMessages.Any())
+            {
+                System.Diagnostics.Debug.WriteLine("EXIST");
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("Sup");
+
+                AllMessages = db.LoginInfos.Where(u => u.LoginUser.Id == currentUser.Id).Select(m => new MainMessageViewModel { 
+                    noOfDeletedMessages=m.DeletedMessages,
+                    noOfMessages=0,
+                    noOfReadMessages=0,
+                    noOfTotalMessages=0
+                });
+                //AllMessages.First().noOfDeletedMessages = db.LoginInfos.Where(lu => lu.LoginUser.Id == currentUser.Id).Select(dm => dm.DeletedMessages).FirstOrDefault();
+                //AllMessages.First().noOfReadMessages = db.Messages.Where(m => m.receiver.Id == currentUser.Id && m.MessageStatus == true).Count();
+                //AllMessages.First().noOfTotalMessages = db.Messages.Where(t => t.receiver.Id == currentUser.Id).Count();
+
+            }
             return View(AllMessages);
         }
 
@@ -49,7 +71,7 @@ namespace SocialNetwork.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-
+             
             var allMessagesFromUser = db.Messages.Where(u => u.sender.Id==SenderUser.Id && u.receiver.Id==CurrentUser.Id).Select(m => new DetailMessageViewModel { 
                 MessageId=m.MessageID,
                 SenderUsername = m.sender.UserName,

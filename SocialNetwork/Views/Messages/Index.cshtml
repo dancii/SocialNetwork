@@ -20,6 +20,7 @@
     </tr>
 
 @foreach (var item in Model){ 
+    if (item.noOfTotalMessages > 0) {
     <tr>
         <td>
             @Html.DisplayFor(modelItem => item.Username)
@@ -29,10 +30,43 @@
         </td>
         <td>
             @Html.ActionLink("Details", "Details", new { senderUsername=item.Username })
-            
+             
         </td>
     </tr>
+    }
 }
 
 </table>
-<h2>Read Messages: </h2> 
+
+<h2>Read: @Html.DisplayFor(m => m.First().noOfReadMessages);</h2>
+<h2>Deleted: @Html.DisplayFor(m => m.First().noOfDeletedMessages);</h2>
+<h2>Total: @Html.DisplayFor(m => m.First().noOfTotalMessages);</h2>
+
+<!--- 
+<h2>Read Messages:@{try{
+                      Html.DisplayFor(m => m.First().noOfReadMessages);
+}catch(InvalidOperationException){
+    @: 0
+}}</h2>
+
+<h2>
+    Deleted Messages:@{try
+    {
+        Html.DisplayFor(m => m.First().noOfDeletedMessages);
+    }
+    catch (InvalidOperationException)
+    {
+        @: 0
+    }}
+</h2> 
+<h2>
+    Total Messages:@{try
+    {
+        Html.DisplayFor(m => m.First().noOfTotalMessages);
+    }
+    catch (InvalidOperationException)
+    {
+       @: 0
+    }}
+</h2> 
+    --->

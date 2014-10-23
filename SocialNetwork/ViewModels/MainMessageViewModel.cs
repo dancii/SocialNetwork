@@ -26,5 +26,9 @@ namespace SocialNetwork.ViewModels
         [DataType(DataType.Text)]
         [Display(Name = "Deleted Messages")]
         public int noOfDeletedMessages { get; set; }
-    }
+
+        [DataType(DataType.Text)]
+        [Display(Name = "Total Messages")]
+        public int noOfTotalMessages { get; set; }
+    } 
 }

@@ -14,7 +14,7 @@ namespace SocialNetwork.Controllers
     public class HomeController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-
+         
         public ActionResult Index()
         {
             var currentUser = db.Users.Find(User.Identity.GetUserId());

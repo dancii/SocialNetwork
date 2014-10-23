@@ -18,10 +18,11 @@ namespace SocialNetwork.Controllers
     [Authorize]
     public class AccountController : Controller
     {
-
+          
         private ApplicationDbContext db = new ApplicationDbContext();
 
         private ApplicationUserManager _userManager;
+
 
         public AccountController()
         {
