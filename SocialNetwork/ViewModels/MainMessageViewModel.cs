@@ -18,5 +18,13 @@ namespace SocialNetwork.ViewModels
         [DataType(DataType.Text)]
         [Display(Name="Unread Messages")]
         public int noOfMessages { get; set; }
+
+        [DataType(DataType.Text)]
+        [Display(Name = "Read Messages")]
+        public int noOfReadMessages { get; set; }
+
+        [DataType(DataType.Text)]
+        [Display(Name = "Deleted Messages")]
+        public int noOfDeletedMessages { get; set; }
     }
 }

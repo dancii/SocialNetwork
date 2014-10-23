@@ -28,7 +28,9 @@ namespace SocialNetwork.Controllers
             var AllMessages = db.Messages.Where(u => u.receiver.Id == currentUser.Id).GroupBy(group => group.sender).Select(m => new MainMessageViewModel
             {
                 Username = m.Key.UserName,
-                noOfMessages = m.Where(k => k.MessageStatus == false).Count()
+                noOfMessages = m.Where(k => k.MessageStatus == false).Count(),
+                noOfReadMessages=m.Where(k=> k.MessageStatus == true).Count(),
+                noOfDeletedMessages=db.LoginInfos.Where(lu => lu.LoginUser.Id == currentUser.Id).Select(dm => dm.DeletedMessages).FirstOrDefault()
             });
 
             return View(AllMessages);
@@ -75,26 +77,7 @@ namespace SocialNetwork.Controllers
             }
             Message message = db.Messages.Find(id);
 
-            var CurrentUser = db.Users.Find(User.Identity.GetUserId());
 
-            var currentUserInfo = db.LoginInfos.Where(i => i.LoginUser.Id == CurrentUser.Id);
-
-            UserInfo loginInfo = null;
-
-            if (currentUserInfo.Count() == 0)
-            {
-                loginInfo = new UserInfo();
-                loginInfo.DeletedMessages += 1;
-                db.LoginInfos.Add(loginInfo);
-            }
-            else
-            {
-                loginInfo = db.LoginInfos.Find(currentUserInfo.SingleOrDefault().LoginInfoID);
-                db.LoginInfos.Attach(loginInfo);
-                loginInfo.DeletedMessages += 1;
-            }
-
-            db.SaveChanges();
 
             if (message == null)
             {
@@ -130,6 +113,26 @@ namespace SocialNetwork.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Message message = db.Messages.Find(id);
+
+            var CurrentUser = db.Users.Find(User.Identity.GetUserId());
+
+            var currentUserInfo = db.LoginInfos.Where(i => i.LoginUser.Id == CurrentUser.Id);
+
+            UserInfo loginInfo = null;
+
+            if (currentUserInfo.Count() == 0)
+            {
+                loginInfo = new UserInfo();
+                loginInfo.DeletedMessages += 1;
+                db.LoginInfos.Add(loginInfo);
+            }
+            else
+            {
+                loginInfo = db.LoginInfos.Find(currentUserInfo.SingleOrDefault().LoginInfoID);
+                db.LoginInfos.Attach(loginInfo);
+                loginInfo.DeletedMessages += 1;
+            }
+
             db.Messages.Remove(message);
             db.SaveChanges();
             return RedirectToAction("Index");
